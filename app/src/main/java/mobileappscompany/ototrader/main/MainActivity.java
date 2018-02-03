@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import mobileappscompany.ototrader.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
 
     private FragmentManager fragmentManager;
     Fragment fragment;
@@ -113,5 +113,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(String make, String model, String year) {
+        ListingFragment listingFragment = new ListingFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_container, listingFragment).commit();
+        listingFragment.displayListing(make, model, year);
     }
 }

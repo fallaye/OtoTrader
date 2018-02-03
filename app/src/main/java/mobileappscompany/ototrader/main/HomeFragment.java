@@ -1,6 +1,7 @@
 package mobileappscompany.ototrader.main;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,7 +24,12 @@ import mobileappscompany.ototrader.R;
  */
 public class HomeFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    Spinner spinnerMake, spinnerModel, spinnerYear;
+    private Spinner spinnerMake, spinnerModel, spinnerYear;
+    private ArrayAdapter<String> makeAdapter;
+
+    private Button btnReset, btnViewListings;
+    private static String make, model, year;
+    private OnFragmentInteractionListener mListener;
 
     public HomeFragment() {}
 
@@ -36,7 +43,12 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
     private void setupView(View view) {
         spinnerMake = view.findViewById(R.id.spinnerMake);
-        ArrayAdapter<String> makeAdapter = new ArrayAdapter<String>(
+        spinnerModel = view.findViewById(R.id.spinnerModel);
+        spinnerYear = view.findViewById(R.id.spinnerYear);
+        btnReset = view.findViewById(R.id.btnReset);
+        btnViewListings = view.findViewById(R.id.btnViewListings);
+
+       makeAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.makes));
         makeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -44,52 +56,124 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
         spinnerMake.setOnItemSelectedListener(this);
 
+        final ArrayAdapter<String> yearAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.years));
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                year = parent.getItemAtPosition(position).toString();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spinnerMake.setAdapter(makeAdapter);
+                spinnerYear.setAdapter(yearAdapter);
+            }
+        });
+
+        btnViewListings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listings(make, model, year);
+            }
+        });
+    }
+
+    private void listings(String make, String model, String year){
+        if (mListener != null) {
+            mListener.onFragmentInteraction(make, model, year);
+        }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        /*String make = parent.getItemAtPosition(position).toString();
-        String[] models = modelSelection(make);
+        make = parent.getItemAtPosition(position).toString();
+        ArrayAdapter<String> modelAdapter = null;
+        switch (make) {
+            case "BMW":
+                modelAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.modelBMW));
+                modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                break;
+            case "Ford":
+                modelAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.modelFord));
+                modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                break;
+            case "Honda":
+                modelAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.modelHonda));
+                modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                break;
+            case "Mini":
+                modelAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.modelMini));
+                modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                break;
+            case "Toyota":
+                modelAdapter = new ArrayAdapter<String>(
+                        getActivity(),
+                        android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.modelToyota));
+                modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                break;
+            default:
+                break;
+        }
+        spinnerModel.setAdapter(modelAdapter);
+       // Toast.makeText(parent.getContext(), " Make Selected: " + make, Toast.LENGTH_LONG).show();
 
-        //Log.d("HomeFragment", models.toString());
-        ArrayAdapter<String> modelAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.makes));
-        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerMake.setAdapter(modelAdapter);
+        spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                model = parent.getItemAtPosition(position).toString();
+               // Toast.makeText(parent.getContext(), "Model Selected: " + model, Toast.LENGTH_LONG).show();
 
-        Toast.makeText(parent.getContext(), "Selected: " + make, Toast.LENGTH_LONG).show();
-   */ }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-    private String[] modelSelection(String make) {
-
-        String[] models = null;
-        switch (make) {
-            case "BMW":
-               models = new String[]{"128i", "135i", "M3"};
-                break;
-            case "Ford":
-                models = new String[]{"Focus", "Taurus", "Fusion"};
-                break;
-            case "GMC":
-                modelSelection("GMC");
-                models = new String[]{"Acadia", "Savana", "Sierra"};
-                break;
-            case "Honda":
-                models = new String[]{"Civic", "Accord", "Fit"};
-                break;
-            case "Toyota":
-                models = new String[]{"Corolla", "Scion", "Runner"};
-                break;
-            default:
-                break;
+   @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
         }
-
-        return models;
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+
+        public void onFragmentInteraction(String make, String model, String year);
+
+    }
+
 }
