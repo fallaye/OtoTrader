@@ -1,11 +1,8 @@
 package mobileappscompany.ototrader.main;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -16,9 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import mobileappscompany.ototrader.R;
+import mobileappscompany.ototrader.login.LoginFragment;
+import mobileappscompany.ototrader.saved_listing.SavedListingFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        HomeFragment.OnFragmentInteractionListener,
+        LoginFragment.OnFragmentInteractionListener{
 
     private FragmentManager fragmentManager;
     Fragment fragment;
@@ -30,15 +31,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -47,7 +39,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         fragment = new HomeFragment();
         fragmentManager = getSupportFragmentManager();
@@ -93,16 +84,13 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-
-
         if (id == R.id.nav_image_home) {
-            // Handle the camera action
             fragment = new HomeFragment();
         } else if (id == R.id.nav_saved_listing) {
-
-        } else if (id == R.id.nav_share) {
-
+            fragment = new SavedListingFragment();
         } else if (id == R.id.nav_signin_signup) {
+            fragment = new LoginFragment();
+        } else if (id == R.id.nav_share) {
 
         }
 
@@ -119,7 +107,14 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(String make, String model, String year) {
         ListingFragment listingFragment = new ListingFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_container, listingFragment).commit();
+                .replace(R.id.frame_container, listingFragment).addToBackStack(null).commit();
         listingFragment.displayListing(make, model, year);
+    }
+
+    @Override
+    public void navigateToHomeFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frame_container, new HomeFragment()).addToBackStack(null).commit();
+
     }
 }

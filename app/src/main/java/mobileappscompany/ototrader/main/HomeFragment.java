@@ -26,7 +26,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
 
     private Spinner spinnerMake, spinnerModel, spinnerYear;
     private ArrayAdapter<String> makeAdapter;
-
     private Button btnReset, btnViewListings;
     private static String make, model, year;
     private OnFragmentInteractionListener mListener;
@@ -48,7 +47,7 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
         btnReset = view.findViewById(R.id.btnReset);
         btnViewListings = view.findViewById(R.id.btnViewListings);
 
-       makeAdapter = new ArrayAdapter<String>(
+        makeAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.makes));
         makeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -132,29 +131,22 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
                 break;
         }
         spinnerModel.setAdapter(modelAdapter);
-       // Toast.makeText(parent.getContext(), " Make Selected: " + make, Toast.LENGTH_LONG).show();
-
         spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 model = parent.getItemAtPosition(position).toString();
-               // Toast.makeText(parent.getContext(), "Model Selected: " + model, Toast.LENGTH_LONG).show();
-
+                // Toast.makeText(parent.getContext(), "Model Selected: " + model, Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent) {}
 
-    }
-
-   @Override
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
@@ -171,9 +163,6 @@ public class HomeFragment extends Fragment implements AdapterView.OnItemSelected
     }
 
     public interface OnFragmentInteractionListener {
-
         public void onFragmentInteraction(String make, String model, String year);
-
     }
-
 }
